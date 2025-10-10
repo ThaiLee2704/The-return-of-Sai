@@ -587,6 +587,11 @@ MonoBehaviour:
   _jumpForce: 300
   _isOnGround: 0
   _isOnSlope: 0
+  _playerState: 0
+  _animController: {fileID: 2025105969}
+  physicMaterials:
+  - {fileID: 6200000, guid: 02d0b8cdb1531c246a79a9339f20ccf6, type: 2}
+  - {fileID: 6200000, guid: 8d3fe9a008912ba439347f75fb8b8c15, type: 2}
 --- !u!1 &1964376723
 GameObject:
   m_ObjectHideFlags: 0

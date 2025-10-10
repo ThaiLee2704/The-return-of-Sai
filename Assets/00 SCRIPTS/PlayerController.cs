@@ -10,6 +10,11 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] float _speed = 0, _jumpForce = 0;
     [SerializeField] bool _isOnGround = false, _isOnSlope = false;
+    [SerializeField] PlayerState _playerState = PlayerState.IDLE;
+
+    [SerializeField] AnimationControllerBase _animController;
+
+    [SerializeField] List<PhysicsMaterial2D> physicMaterials = new List<PhysicsMaterial2D>();
 
     private void Awake()
     {
@@ -21,6 +26,8 @@ public class PlayerController : MonoBehaviour
     {
         CheckPlatform();
         Moving();
+        UpdateState();
+        _animController.UpdateAnimation(_playerState);
     }
 
     void CheckPlatform()
@@ -35,14 +42,42 @@ public class PlayerController : MonoBehaviour
         _isOnGround = hasHit;   //Khi có va chạm đồng nghĩa với chạm đất
         _isOnSlope = hasHit && !(hit.normal.x == 0 && hit.normal.y == 1);   //Khi ở trên dốc đồng nghĩa với việc ở
                                                                             //trên đất và vector pháp tuyển khác (0,1)
+                                                                            //Cách tối ưu:
         if (hasHit)
         {
             slopeTangent = new Vector2(hit.normal.y, -hit.normal.x);
             if (hit.collider.CompareTag("MovingPlatform"))
-                transform.SetParent(hasHit ? hit.collider.transform : null);
+                transform.SetParent(hit.collider.transform);
+            else
+                this.transform.SetParent(null);
         }
         else
             this.transform.SetParent(null);
+
+        //Cách tường minh:
+        //if (hit.collider != null)
+        //{
+        //    _isOnGround = true;
+
+        //    if (!(hit.normal.x == 0 && hit.normal.y == 1))
+        //    {
+        //        _isOnSlope = true;
+        //        slopeTangent = new Vector2(hit.normal.y, -hit.normal.x);
+        //    }
+        //    else
+        //        _isOnSlope = false;
+
+        //    if (hit.collider.CompareTag("MovingPlatform"))
+        //        transform.SetParent(hit.collider.transform);
+        //    else
+        //        transform.SetParent(null);
+        //}
+        //else
+        //{
+        //    _isOnGround = false;
+        //    _isOnSlope = false;
+        //    transform.SetParent(null);
+        //}
     }
 
     void Moving()
@@ -85,5 +120,46 @@ public class PlayerController : MonoBehaviour
             this.transform.localScale = scale;
         }
         #endregion
+    }
+
+    void UpdateState()
+    {
+        if (_playerState == PlayerState.HURT)
+            return;
+
+        if (!_isOnGround)
+        {
+            _playerState = (_rigi.velocity.y > 0) ? PlayerState.JUMP : PlayerState.FALL;
+        }
+        else
+        {   
+            if (Input.GetKey(KeyCode.W))
+            {
+                _playerState = PlayerState.CLIMB;
+            }
+            else if (Input.GetKey(KeyCode.S))
+                _playerState = PlayerState.DUCK;
+            else if (Mathf.Abs(_rigi.velocity.x) >= 0.1f)
+            {
+                _playerState = PlayerState.RUN;
+                _rigi.sharedMaterial = physicMaterials[0];
+            }
+            else
+            {
+                _playerState = PlayerState.IDLE;
+                _rigi.sharedMaterial = physicMaterials[1];
+            }
+        }
+    }
+
+    public enum PlayerState
+    {
+        IDLE,
+        RUN,
+        JUMP,
+        FALL,
+        CLIMB,
+        DUCK,
+        HURT
     }
 }
