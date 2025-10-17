@@ -129,11 +129,18 @@ public class PlayerController : MonoBehaviour
 
         if (!_isOnGround)
         {
-            _playerState = (_rigi.velocity.y > 0) ? PlayerState.JUMP : PlayerState.FALL;
+            //_playerState = (_rigi.velocity.y > 0) ? PlayerState.JUMP : PlayerState.FALL;
+            if (_rigi.velocity.y > 0)
+            {
+                _playerState = PlayerState.JUMP;
+                _colli.sharedMaterial = physicMaterials[0];
+            }
+            else
+                _playerState = PlayerState.FALL;
         }
         else
         {   
-            if (Input.GetKey(KeyCode.W))
+            if (Input.GetKey(KeyCode.W) && _rigi.velocity.x == 0)
             {
                 _playerState = PlayerState.CLIMB;
             }
@@ -142,12 +149,12 @@ public class PlayerController : MonoBehaviour
             else if (Mathf.Abs(_rigi.velocity.x) >= 0.1f)
             {
                 _playerState = PlayerState.RUN;
-                _rigi.sharedMaterial = physicMaterials[0];
+                _colli.sharedMaterial = physicMaterials[0];
             }
             else
             {
                 _playerState = PlayerState.IDLE;
-                _rigi.sharedMaterial = physicMaterials[1];
+                _colli.sharedMaterial = physicMaterials[1];
             }
         }
     }
