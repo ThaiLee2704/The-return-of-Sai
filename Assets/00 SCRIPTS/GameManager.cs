@@ -6,4 +6,7 @@ public class GameManager : Singleton<GameManager>
 {
     [SerializeField] PlayerController _player;
     public PlayerController Player => _player;
+
+    [SerializeField] PlayerHUDController _playerHUDController;
+    public PlayerHUDController PlayerHUDController => _playerHUDController;
 }

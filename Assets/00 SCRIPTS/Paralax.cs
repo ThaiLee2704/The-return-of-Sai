@@ -7,23 +7,12 @@ public class Paralax : MonoBehaviour
     [SerializeField]
     List<LoopImage> _loopingBGs = new List<LoopImage>();    //List các BG
 
-    //Cách dùng List:
-    //[SerializeField]
-    //List<float> _speedsBG = new List<float>();  //List các tốc độ cho từng BG để tạo ra Parallax
-
-    //Cách khác mà không cần dùng List các tốc độ của BG:
     [SerializeField] float _baseSpeed, _configSpeed;
 
     [SerializeField] float _way;    //Hướng của BG lúc player chạy sẽ ngược với hướng chạy của player
 
     [SerializeField] float _oldPosX;    //Thêm 1 biến tọa độ cũ, nhằm mục đích nếu player chạy mắc cái gì đó thì Parallax không xảy ra
     
-    // Start is called before the first frame update
-    //void Start()
-    //{
-
-    //}
-
     // Update is called once per frame
     void Update()
     {

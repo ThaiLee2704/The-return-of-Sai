@@ -6,18 +6,15 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D _rigi;
     private Collider2D _colli;
-    private Vector2 _slopeTangent;
     private int _groundMask;
 
     [Header("Physics")]
     [SerializeField] private float _speed = 0;
     [SerializeField] private float _jumpForce = 0;
     [SerializeField] private float _rayLength = 1.4f;
-    //[SerializeField] private float _climbSpeed = 0;
 
     [Header("States")]
     [SerializeField] private bool _isOnGround = false;
-    //[SerializeField] private bool _isOnLadder = false;
     [SerializeField] private PlayerState _playerState = PlayerState.IDLE;
     public PlayerState playerState => _playerState;
     
@@ -26,7 +23,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Physics Materials")]
     [SerializeField] private List<PhysicsMaterial2D> _physicMaterials = new List<PhysicsMaterial2D>();
-    //[SerializeField] private LadderMovement _ladderMovement;
 
     public enum PlayerState
     {
@@ -44,13 +40,7 @@ public class PlayerController : MonoBehaviour
         _rigi = GetComponent<Rigidbody2D>();
         _colli = GetComponent<Collider2D>();
         _groundMask = LayerMask.GetMask(CONSTANT.GROUND_LAYER, CONSTANT.MOVING_PLATFORM_LAYER);
-        //_ladderMovement = GetComponent<LadderMovement>();
     }
-
-    //private void Start()
-    //{
-    //    _ladderMovement.Init(_rigi);
-    //}
     
     void Update()
     {

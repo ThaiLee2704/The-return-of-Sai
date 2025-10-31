@@ -6,6 +6,9 @@ TagManager:
   tags:
   - MovingPlatform
   - Ladder
+  - Carrot
+  - Star
+  - Trap
   layers:
   - Default
   - TransparentFX
