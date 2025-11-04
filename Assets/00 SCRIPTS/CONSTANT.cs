@@ -8,4 +8,5 @@ public class CONSTANT
     public static string LADDER_TAG = "Ladder";
     public static string GROUND_LAYER = "Ground";
     public static string MOVING_PLATFORM_LAYER = "MovingPlatformLayer";
+    public static string PLAYER_TAG = "Player";
 }

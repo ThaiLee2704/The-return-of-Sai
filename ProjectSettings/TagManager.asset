@@ -18,7 +18,7 @@ TagManager:
   - UI
   - Ladder
   - Ground
-  - 
+  - Enemy
   - 
   - 
   - 
@@ -45,4 +45,25 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1833464151
+    locked: 0
+  - name: DecorAfter
+    uniqueID: 3804273609
+    locked: 0
+  - name: Platform
+    uniqueID: 1819335895
+    locked: 0
+  - name: Player
+    uniqueID: 438112925
+    locked: 0
+  - name: Enemy
+    uniqueID: 1141968497
+    locked: 0
+  - name: Collection
+    uniqueID: 219542679
+    locked: 0
+  - name: DecorBefore
+    uniqueID: 2746963819
     locked: 0

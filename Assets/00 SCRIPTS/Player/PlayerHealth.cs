@@ -23,7 +23,8 @@ public class PlayerHealth : MonoBehaviour
     {
         _hud = GameManager.Instant.PlayerHUDController;
         _hud.UpdateHealth(currentHealth);
-        OnHealthChanged += _hud.UpdateHealth;
+        OnHealthChanged += _hud.UpdateHealth;   //Đăng kí sự kiện UpdateHealth cho OnHealthChanged
+        //OnPlayerDie += cũng đky sự kiện Gameover chẳng hạn như cái UpdateHealth trên
     }
 
     public void TakeDamage(int amount = 1)  //Nếu gọi hàm mà không truyền tham số thì mặc định là 1
@@ -42,7 +43,7 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth >= maxHealth) return;
 
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
-        OnHealthChanged?.Invoke(currentHealth);
+        OnHealthChanged?.Invoke(currentHealth); //gọi các sự kiện đã đky ở đây cụ thể là chỉ mỗi _hud.UpdateHealth()
     }
 
     private void Die()
