@@ -5,8 +5,10 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D _rigi;
+    public Rigidbody2D Rigi => _rigi;
     private Collider2D _colli;
     private int _groundMask;
+    private PlayerHealth _playerHealth;
 
     [Header("Physics")]
     [SerializeField] private float _speed = 0;
@@ -17,9 +19,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool _isOnGround = false;
     [SerializeField] private PlayerState _playerState = PlayerState.IDLE;
     public PlayerState playerState => _playerState;
-    
+
     [Header("Animation")]
     [SerializeField] private AnimationControllerBase _animController;
+    [SerializeField] float hurtTimer;
 
     [Header("Physics Materials")]
     [SerializeField] private List<PhysicsMaterial2D> _physicMaterials = new List<PhysicsMaterial2D>();
@@ -32,6 +35,7 @@ public class PlayerController : MonoBehaviour
         FALL,
         CLIMB,
         DUCK,
+        DIE,
         HURT
     }
 
@@ -39,12 +43,15 @@ public class PlayerController : MonoBehaviour
     {
         _rigi = GetComponent<Rigidbody2D>();
         _colli = GetComponent<Collider2D>();
+        _playerHealth = GetComponent<PlayerHealth>();
         _groundMask = LayerMask.GetMask(CONSTANT.GROUND_LAYER, CONSTANT.MOVING_PLATFORM_LAYER);
     }
-    
+
     void Update()
     {
-        CheckGround();
+        if (_playerState != PlayerState.DIE)
+            CheckGround();
+
         HandleMovement();
         HandleJump();
         HandleFlip();
@@ -116,6 +123,7 @@ public class PlayerController : MonoBehaviour
             _isOnGround = false;
             _rigi.velocity = new Vector2(_rigi.velocity.x, 0f); // reset vertical velocity
             _rigi.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
+            //ForceMode2D.Impulse tác động mạnh 1 lần tức thời chứ không theo thời gian
         }
     }
     #endregion
@@ -138,8 +146,37 @@ public class PlayerController : MonoBehaviour
     #region --- State Update ---
     private void UpdateState()
     {
-        if (_playerState == PlayerState.HURT)
+        if (_playerHealth.CurrentHealth <= 0 && _playerState != PlayerState.DIE)
+        {
+            _playerState = PlayerState.DIE;
+            _rigi.velocity = Vector2.zero;
+            _colli.enabled = false;   // Rơi xuyên sàn
+            _animController.UpdateAnimation(PlayerState.HURT);
+            StartCoroutine(EnableAfterDelay(this.gameObject, 3f));
             return;
+        }
+
+        if (_playerHealth.wasDamaged && _playerState != PlayerState.HURT)
+        {
+            _rigi.velocity = new Vector2(0, 0);
+            _rigi.AddForce(Vector2.up * 4f, ForceMode2D.Impulse);
+            _playerState = PlayerState.HURT;
+            _playerHealth.wasDamaged = false;
+            hurtTimer = 0;
+            return;
+        }
+
+        if (_playerState == PlayerState.HURT)
+        {
+            hurtTimer += Time.deltaTime;
+            if (hurtTimer > 0.5f)
+            {
+                hurtTimer = 0;
+                _playerState = PlayerState.IDLE;
+            }
+            return;
+        }
+
 
         if (!_isOnGround)
         {
@@ -147,34 +184,40 @@ public class PlayerController : MonoBehaviour
             {
                 _playerState = PlayerState.CLIMB;
             }
-            else if (_rigi.velocity.y > 0)
+            else if (_rigi.velocity.y > 0 && _colli.enabled)
             {
                 _playerState = PlayerState.JUMP;
-                _colli.sharedMaterial = _physicMaterials[0]; 
+                _colli.sharedMaterial = _physicMaterials[0];
                 //Mục đích không có ma sát ở cạnh colli khi chạm cạnh của platform
             }
-            else if (_rigi.velocity.y < 0)
+            else if (_rigi.velocity.y < 0 && _colli.enabled)
             {
                 _playerState = PlayerState.FALL;
             }
-            
+            return;
+        }
+
+        if (Input.GetKey(KeyCode.J))
+        {
+            _playerState = PlayerState.DUCK;
+        }
+        else if (Mathf.Abs(_rigi.velocity.x) > 0.05f)
+        {
+            _playerState = PlayerState.RUN;
+            _colli.sharedMaterial = _physicMaterials[0];
         }
         else
         {
-            if (Input.GetKey(KeyCode.J))
-                _playerState = PlayerState.DUCK;
-
-            else if (Mathf.Abs(_rigi.velocity.x) > 0.05f)
-            {
-                _playerState = PlayerState.RUN;
-                _colli.sharedMaterial = _physicMaterials[0];
-            }
-            else
-            {
-                _playerState = PlayerState.IDLE;
-                _colli.sharedMaterial = _physicMaterials[1];
-            }
+            _playerState = PlayerState.IDLE;
+            _colli.sharedMaterial = _physicMaterials[1];
         }
+
     }
     #endregion
+
+    IEnumerator EnableAfterDelay(GameObject target, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        target.SetActive(false);
+    }
 }

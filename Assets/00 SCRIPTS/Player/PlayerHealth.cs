@@ -10,7 +10,9 @@ public class PlayerHealth : MonoBehaviour
     [Header("Infomation")]
     [SerializeField] private int maxHealth = 3;
     [SerializeField] private int currentHealth;
+    public int CurrentHealth => currentHealth;
 
+    public bool wasDamaged = false;
     public event Action<int> OnHealthChanged; // UI lắng nghe để cập nhật
     public event Action OnPlayerDie;
 
@@ -32,6 +34,7 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth <= 0) return;
 
         currentHealth -= amount;
+        wasDamaged = true;
         OnHealthChanged?.Invoke(currentHealth);
 
         if (currentHealth <= 0)

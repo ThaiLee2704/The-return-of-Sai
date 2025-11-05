@@ -12,7 +12,6 @@ public abstract class EnemyBase : MonoBehaviour //Tạo là 1 abs class để kh
     protected Rigidbody2D _rb;
     //protected Animator _anim;
     protected Collider2D _collider;
-    protected Transform _player;
 
     protected bool _isDead = false;
 
@@ -21,7 +20,6 @@ public abstract class EnemyBase : MonoBehaviour //Tạo là 1 abs class để kh
         _rb = GetComponent<Rigidbody2D>();
         //_anim = GetComponent<Animator>();
         _collider = GetComponent<Collider2D>();
-        _player = GameObject.FindGameObjectWithTag("Player")?.transform;
     }
 
     protected virtual void Start()
@@ -62,7 +60,9 @@ public abstract class EnemyBase : MonoBehaviour //Tạo là 1 abs class để kh
         {
             PlayerHealth playerHealth = collision.collider.GetComponent<PlayerHealth>();
             if (playerHealth != null)
+            {
                 playerHealth.TakeDamage(damage);
+            }
         }
     }
 
@@ -71,6 +71,9 @@ public abstract class EnemyBase : MonoBehaviour //Tạo là 1 abs class để kh
 
         if (collision.CompareTag(CONSTANT.PLAYER_TAG))
         {
+            Rigidbody2D _rigi = GameManager.Instant.Player.Rigi;
+            _rigi.velocity = new Vector2(0, 0);
+            _rigi.AddForce(Vector2.up * 8f, ForceMode2D.Impulse);
             TakeDamage();
         }
     }

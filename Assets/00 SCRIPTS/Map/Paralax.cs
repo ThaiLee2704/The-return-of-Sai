@@ -20,8 +20,6 @@ public class Paralax : MonoBehaviour
 
         if (GameManager.Instant.Player.playerState == PlayerController.PlayerState.IDLE)
             return;
-        //if (GameManager.Instant.Player.playerState == PlayerController.PlayerState.JUMP)
-        //    return;
         if (GameManager.Instant.Player.transform.position.x == _oldPosX)    //Khi mà tọa độ player bằng giữ nguyên thì Paralax không xảy ra
             return;
 
