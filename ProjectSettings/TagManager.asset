@@ -20,7 +20,7 @@ TagManager:
   - Ground
   - Enemy
   - HeadCheck
-  - 
+  - MovingPlatformLayer
   - 
   - 
   - 
@@ -54,6 +54,9 @@ TagManager:
     locked: 0
   - name: Platform
     uniqueID: 1819335895
+    locked: 0
+  - name: PlatformMoving
+    uniqueID: 2268104023
     locked: 0
   - name: Player
     uniqueID: 438112925

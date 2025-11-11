@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     private PlayerHUDController _hud;
+    private MainMenuUI _mainMenu;
 
     [Header("Infomation")]
     [SerializeField] private int maxHealth = 3;
@@ -24,9 +25,10 @@ public class PlayerHealth : MonoBehaviour
     private void Start()
     {
         _hud = GameManager.Instant.PlayerHUDController;
+        _mainMenu = MainMenuUI.Instant;
         _hud.UpdateHealth(currentHealth);
         OnHealthChanged += _hud.UpdateHealth;   //Đăng kí sự kiện UpdateHealth cho OnHealthChanged
-        //OnPlayerDie += cũng đky sự kiện Gameover chẳng hạn như cái UpdateHealth trên
+        OnPlayerDie += _mainMenu.ShowLoseScreen;//cũng đky sự kiện Gameover chẳng hạn như cái UpdateHealth trên
     }
 
     public void TakeDamage(int amount = 1)  //Nếu gọi hàm mà không truyền tham số thì mặc định là 1
@@ -53,6 +55,5 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player Died!");
         OnPlayerDie?.Invoke();
-        // Ở đây bạn có thể gọi hàm RestartLevel() hoặc bật UI Game Over
     }
 }

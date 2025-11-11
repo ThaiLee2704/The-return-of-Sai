@@ -73,7 +73,7 @@ public abstract class EnemyBase : MonoBehaviour //Tạo là 1 abs class để kh
         {
             Rigidbody2D _rigi = GameManager.Instant.Player.Rigi;
             _rigi.velocity = new Vector2(0, 0);
-            _rigi.AddForce(Vector2.up * 8f, ForceMode2D.Impulse);
+            _rigi.AddForce(Vector2.up * 10f, ForceMode2D.Impulse);
             TakeDamage();
         }
     }

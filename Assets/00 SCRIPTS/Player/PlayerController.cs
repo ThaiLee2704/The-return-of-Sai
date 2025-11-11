@@ -27,17 +27,7 @@ public class PlayerController : MonoBehaviour
     [Header("Physics Materials")]
     [SerializeField] private List<PhysicsMaterial2D> _physicMaterials = new List<PhysicsMaterial2D>();
 
-    public enum PlayerState
-    {
-        IDLE,
-        RUN,
-        JUMP,
-        FALL,
-        CLIMB,
-        DUCK,
-        DIE,
-        HURT
-    }
+    public enum PlayerState {IDLE, RUN, JUMP, FALL, CLIMB, DUCK, DIE, HURT}
 
     private void Awake()
     {
@@ -152,7 +142,7 @@ public class PlayerController : MonoBehaviour
             _rigi.velocity = Vector2.zero;
             _colli.enabled = false;   // Rơi xuyên sàn
             _animController.UpdateAnimation(PlayerState.HURT);
-            StartCoroutine(EnableAfterDelay(this.gameObject, 3f));
+            StartCoroutine(DisableAfterDelay(this.gameObject, 3f));
             return;
         }
 
@@ -180,7 +170,7 @@ public class PlayerController : MonoBehaviour
 
         if (!_isOnGround)
         {
-            if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) && _rigi.gravityScale == 0)   //WARNING: Đổi điều kiện _rigi.velocity.x == 0
+            if (/*(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) &&*/_rigi.gravityScale == 0)   //WARNING: Đổi điều kiện _rigi.velocity.x == 0
             {
                 _playerState = PlayerState.CLIMB;
             }
@@ -215,7 +205,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    IEnumerator EnableAfterDelay(GameObject target, float delay)
+    IEnumerator DisableAfterDelay(GameObject target, float delay)
     {
         yield return new WaitForSeconds(delay);
         target.SetActive(false);
